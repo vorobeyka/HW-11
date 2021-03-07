@@ -12,9 +12,10 @@ namespace DepsWebApp.Middlewares
     public class LogMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly MemoryStreamManager _stream;
         private readonly ILogger<LogMiddleware> _logger;
 
-        public LogMiddleware(RequestDelegate next, ILogger<LogMiddleware> logger)
+        public LogMiddleware(RequestDelegate next, MemoryStreamManager stream, ILogger<LogMiddleware> logger)
         {
             _next = next;
             _logger = logger;
