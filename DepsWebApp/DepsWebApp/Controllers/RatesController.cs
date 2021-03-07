@@ -5,6 +5,9 @@ using DepsWebApp.Services;
 
 namespace DepsWebApp.Controllers
 {
+    /// <summary>
+    /// Rates controller that exchanging currency
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class RatesController : ControllerBase
@@ -20,6 +23,13 @@ namespace DepsWebApp.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Get amount in exchanged currency
+        /// </summary>
+        /// <param name="srcCurrency"></param>
+        /// <param name="dstCurrency"></param>
+        /// <param name="amount"></param>
+        /// <returns>Decimal amount of currency</returns>
         [HttpGet("{srcCurrency}/{dstCurrency}")]
         public async Task<ActionResult<decimal>> Get(string srcCurrency, string dstCurrency, decimal? amount)
         {

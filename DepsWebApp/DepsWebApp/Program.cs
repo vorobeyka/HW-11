@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace DepsWebApp
 {
@@ -15,6 +17,15 @@ namespace DepsWebApp
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureLogging(logginBuilder =>
+                {
+                    logginBuilder.ClearProviders();
+                    logginBuilder.SetMinimumLevel(LogLevel.Trace);
+                    logginBuilder.AddSerilog(new LoggerConfiguration()
+                        .WriteTo.Console()
+                        .WriteTo.File("service.log")
+                        .CreateLogger());
                 });
     }
 }

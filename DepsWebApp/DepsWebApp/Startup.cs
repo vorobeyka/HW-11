@@ -7,6 +7,11 @@ using DepsWebApp.Options;
 using DepsWebApp.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using DepsWebApp.Middlewares;
+using DepsWebApp.Filters;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using System.IO;
 
 namespace DepsWebApp
 {
@@ -42,6 +47,11 @@ namespace DepsWebApp
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DI Demo App API", Version = "v1" });
+                var filePath = Path.Combine(AppContext.BaseDirectory, "DepsWebApp.xml");
+                if (File.Exists(filePath))
+                {
+                    c.IncludeXmlComments(filePath);
+                }
             });
 
             // Add batch of framework services
@@ -51,10 +61,15 @@ namespace DepsWebApp
 
         // This method gets called by the runtime.
         // Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DI Demo App API v1"));
+            if (env.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DI Demo App API v1"));
+            }
+
+            app.UseMiddleware<LogMiddleware>();
 
             app.UseRouting();
 
