@@ -9,7 +9,7 @@ namespace DepsWebApp.Controllers
     /// Authorization controller
     /// </summary>
     [ApiController]
-    [Route("/")]
+    [Route("[controller]")]
     [TypeFilter(typeof(ExceptionFilter))]
     public class AuthController : ControllerBase
     {
@@ -19,7 +19,7 @@ namespace DepsWebApp.Controllers
         /// <param name="user"></param>
         /// <returns>Status code</returns>
         [HttpPost]
-        [Route("/register")]
+        [Route("register")]
         public ActionResult Register([FromBody] User user)
         {
             throw new NotImplementedException();

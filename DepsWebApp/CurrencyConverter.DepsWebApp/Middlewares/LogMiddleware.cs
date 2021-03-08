@@ -12,10 +12,9 @@ namespace DepsWebApp.Middlewares
     public class LogMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly MemoryStreamManager _stream;
         private readonly ILogger<LogMiddleware> _logger;
 
-        public LogMiddleware(RequestDelegate next, MemoryStreamManager stream, ILogger<LogMiddleware> logger)
+        public LogMiddleware(RequestDelegate next, ILogger<LogMiddleware> logger)
         {
             _next = next;
             _logger = logger;
@@ -23,11 +22,18 @@ namespace DepsWebApp.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
+            var originalBodyStream = context.Response.Body;
+            await using var responseBody = new MemoryStream();
+
+            context.Response.Body = responseBody;
+
             await LogRequest(context.Request);
 
             await _next.Invoke(context);
 
             await LogResponse(context);
+
+            await responseBody.CopyToAsync(originalBodyStream);
         }
 
         private async Task LogRequest(HttpRequest request)
